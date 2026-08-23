@@ -5,9 +5,11 @@ import { defineConfig } from 'vitest/config';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Set sane test env BEFORE any test module imports trigger env.config.ts.
-// dotenv's config() does not override values already on process.env,
-// so these win over whatever is in the repo-root .env.
-process.env.DATABASE_URL ??= `file:${path.resolve(__dirname, 'tests/test.db')}`;
+// dotenv's config() does not override values already on process.env, so this
+// wins over whatever APP_ENV is in .env. DATABASE_URL is intentionally left
+// alone: tests run against the same Postgres instance as normal development
+// (see tests/global-setup.ts and tests/helpers/db.ts for how test data stays
+// isolated from it).
 process.env.APP_ENV ??= 'test';
 process.env.APP_PORT ??= '0';
 
@@ -18,10 +20,10 @@ export default defineConfig({
     include: ['tests/**/*.test.ts'],
     globalSetup: ['tests/global-setup.ts'],
     setupFiles: ['tests/setup.ts'],
-    // Run test files sequentially (no parallel) so each PrismaClient
-    // gets exclusive access to the shared SQLite file. Without this,
-    // Vitest 4 runs files concurrently by default → libsql adapter
-    // "Operation has timed out" errors on shared file.
+    // Test files share one Postgres instance (see tests/global-setup.ts).
+    // Running them sequentially keeps each pg.Pool from piling onto the
+    // same connection limit and keeps failures easy to attribute to a
+    // single file.
     fileParallelism: false,
     isolate: true,
     coverage: {

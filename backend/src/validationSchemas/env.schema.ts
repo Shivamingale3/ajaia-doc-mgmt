@@ -30,6 +30,18 @@ const envSchema = z.object({
   COOKIE_SECURE: z.stringbool().optional(),
   COOKIE_SAME_SITE: z.enum(['strict', 'lax', 'none']).default('lax'),
   COOKIE_DOMAIN: z.string().optional(),
+
+  // Comma-separated list of browser origins allowed to send credentialed
+  // requests. Defaults to the Vite dev server.
+  CORS_ORIGINS: z
+    .string()
+    .default('http://localhost:5173')
+    .transform((value) =>
+      value
+        .split(',')
+        .map((origin) => origin.trim())
+        .filter((origin) => origin.length > 0),
+    ),
 });
 
 export default envSchema;

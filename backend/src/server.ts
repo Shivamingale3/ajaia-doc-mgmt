@@ -8,9 +8,14 @@ async function startServer(): Promise<void> {
 
   try {
     // Connect infrastructure
-    await db.$connect();
-    dbConnected = true;
-    logger.info('Database connection established successfully.');
+    try {
+      await db.$queryRawUnsafe('SELECT 1');
+      dbConnected = true;
+      logger.info('Database connection established successfully.');
+    } catch (error) {
+      logger.error('Failed to connect to database:', error);
+      process.exit(1);
+    }
 
     // Start HTTP server
     const server = app.listen(env.APP_PORT, () => {

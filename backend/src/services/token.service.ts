@@ -151,11 +151,14 @@ class TokenService {
    * `req.cookies` is undefined and this always reports no tokens.
    */
   public readTokensFromRequest(request: Request): CookieTokens {
-    const cookies = (request.cookies ?? {}) as Record<string, string | undefined>;
+    // Typed as possibly undefined on purpose: cookie-parser types req.cookies
+    // as always present, but it is only populated once that middleware has
+    // actually run. Reading tokens must not throw if the order ever changes.
+    const cookies = request.cookies as Record<string, string | undefined> | undefined;
 
     return {
-      authToken: cookies[AUTH_TOKEN_COOKIE],
-      refreshToken: cookies[REFRESH_TOKEN_COOKIE],
+      authToken: cookies?.[AUTH_TOKEN_COOKIE],
+      refreshToken: cookies?.[REFRESH_TOKEN_COOKIE],
     };
   }
 
