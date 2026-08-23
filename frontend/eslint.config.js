@@ -18,5 +18,11 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser,
     },
+    rules: {
+      // shadcn/ui components (e.g. button.tsx) export a cva() variants
+      // constant alongside the component; that's a fixed, standard pattern,
+      // not something breaking fast refresh in practice.
+      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+    },
   },
 ])

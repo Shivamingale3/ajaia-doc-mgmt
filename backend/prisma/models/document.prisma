@@ -1,0 +1,28 @@
+model Document {
+  id        String   @id @default(ulid())
+  title     String
+  // Sanitized HTML (see backend/src/utils/sanitizeContent.ts). One format flows
+  // through create/autosave/upload rather than juggling HTML and Tiptap's JSON.
+  content   String   @default("")
+  ownerId   String
+  owner     User            @relation("OwnedDocuments", fields: [ownerId], references: [id], onDelete: Cascade)
+  shares    DocumentShare[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([ownerId])
+  @@map("documents")
+}
+
+model DocumentShare {
+  id         String   @id @default(ulid())
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation("SharedDocuments", fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([documentId, userId])
+  @@index([userId])
+  @@map("document_shares")
+}

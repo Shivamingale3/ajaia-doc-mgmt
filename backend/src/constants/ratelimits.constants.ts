@@ -25,6 +25,11 @@ export const RATE_LIMITS = {
     maxRequests: 20,
     message: 'Too many session refresh attempts, please try again later.',
   },
+  UPLOAD: {
+    windowMs: ONE_MINUTE_MS,
+    maxRequests: 10,
+    message: 'Too many file uploads, please try again later.',
+  },
 } as const satisfies Record<string, RateLimitConfig>;
 
 export type RateLimitKey = keyof typeof RATE_LIMITS;

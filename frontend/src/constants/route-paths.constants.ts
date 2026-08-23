@@ -5,4 +5,8 @@
 export const ROUTE_PATHS = {
   HOME: '/',
   ABOUT: '/about',
+  LOGIN: '/login',
+  REGISTER: '/register',
+  DOCUMENTS: '/documents',
+  DOCUMENT_DETAIL: '/documents/$id',
 } as const;

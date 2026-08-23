@@ -1,5 +1,6 @@
-import { createRouter } from "@tanstack/react-router";
-import { routeTree } from "../routes/route-tree";
+import { createRouter } from '@tanstack/react-router';
+import { routeTree } from '../routes/route-tree';
+import { queryClient } from '../lib/query-client';
 
 /**
  * The application router instance.
@@ -7,5 +8,6 @@ import { routeTree } from "../routes/route-tree";
  */
 export const router = createRouter({
   routeTree,
-  defaultPreload: "intent",
+  context: { queryClient },
+  defaultPreload: 'intent',
 });

@@ -1,6 +1,10 @@
 import { rootRoute } from './root.route';
 import { homeRoute } from './home.route';
 import { aboutRoute } from './about.route';
+import { loginRoute } from './login.route';
+import { registerRoute } from './register.route';
+import { documentsRoute } from './documents.route';
+import { documentDetailRoute } from './document-detail.route';
 import { notFoundRoute } from './not-found.route';
 
 /**
@@ -14,5 +18,9 @@ import { notFoundRoute } from './not-found.route';
 export const routeTree = rootRoute.addChildren([
   homeRoute,
   aboutRoute,
+  loginRoute,
+  registerRoute,
+  documentsRoute,
+  documentDetailRoute,
   notFoundRoute, // Must remain last — catch-all fallback
 ]);

@@ -1,0 +1,18 @@
+services:
+  app:
+    build: .
+    container_name: ajaia-doc-mgmt
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    # Bound to localhost only — Cloudflare Tunnel (cloudflared) is the sole
+    # ingress and should point at http://localhost:5000. The Postgres
+    # container this connects to (via DATABASE_URL in .env.production) is a
+    # separate, already-running service — see README.md for how they relate.
+    ports:
+      - "127.0.0.1:5000:5000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

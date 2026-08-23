@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 import { HttpException } from '../exceptions/http.exception.js';
 import { ZodError } from 'zod';
+import { MulterError } from 'multer';
 import { logger } from '../utils/logger.js';
 
 export function errorHandler(
@@ -27,6 +28,19 @@ export function errorHandler(
   if (err instanceof ZodError) {
     const message = err.issues[0]?.message ?? 'Validation failed';
     logger.error(`Validation error: ${message}`);
+
+    res.status(400).json({
+      success: false,
+      message,
+    });
+    return;
+  }
+
+  if (err instanceof MulterError) {
+    logger.error(`Upload error: ${err.message}`);
+
+    const message =
+      err.code === 'LIMIT_FILE_SIZE' ? 'File is too large (max 2MB)' : 'File upload failed';
 
     res.status(400).json({
       success: false,
